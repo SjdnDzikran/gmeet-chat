@@ -125,21 +125,21 @@ export default function ChatRoom() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex flex-col">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm py-4 px-6 flex justify-between items-center">
+      <header className="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center">
-          <Link href="/" className="text-blue-600 dark:text-blue-400 mr-4">
+          <Link href="/" className="text-blue-600 dark:text-blue-400 mr-4 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
             &larr; Back
           </Link>
-          <img src="/chathub-logo.svg" alt="ChatHub Logo" className="h-8 w-8 mr-2" />
-          <h1 className="text-xl font-bold text-gray-800 dark:text-white">
+          <img src="/chathub-logo.svg" alt="ChatHub Logo" className="h-9 w-9 mr-3" />
+          <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">
             ChatHub Room: <span className="text-blue-600 dark:text-blue-400">{roomId}</span>
           </h1>
         </div>
         <button
           onClick={copyInviteLink}
-          className="bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+          className="bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
         >
           {copySuccess ? "Copied!" : "Copy Invite Link"}
         </button>
@@ -147,15 +147,15 @@ export default function ChatRoom() {
       
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar - Participants */}
-        <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 hidden md:block">
-          <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4">
+        <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 hidden md:block shadow-inner">
+          <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-5">
             Participants ({participants.length})
           </h2>
           <ul>
             {participants.map((participant, index) => (
               <li 
                 key={index} 
-                className="py-2 px-3 rounded-md mb-1 flex items-center text-gray-700 dark:text-gray-300"
+                className="py-2 px-3 rounded-lg mb-1 flex items-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
                 {participant} {participant === userName && "(You)"}
@@ -167,28 +167,28 @@ export default function ChatRoom() {
         {/* Main chat area */}
         <div className="flex-1 flex flex-col">
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
             {messages.map((message) => (
               <div 
                 key={message.id} 
                 className={`flex ${message.sender === userName ? 'justify-end' : 'justify-start'}`}
               >
                 <div 
-                  className={`max-w-[70%] rounded-lg px-4 py-2 ${
+                  className={`max-w-[75%] rounded-xl px-4 py-2 shadow-sm ${
                     message.sender === "System" 
-                      ? "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300" 
+                      ? "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300" 
                       : message.sender === userName
-                        ? "bg-blue-600 text-white" 
-                        : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200"
+                        ? "bg-blue-600 text-white shadow-md" 
+                        : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 shadow-md"
                   }`}
                 >
                   {message.sender !== userName && message.sender !== "System" && (
-                    <div className="font-bold text-sm text-gray-600 dark:text-gray-400 mb-1">
+                    <div className="font-semibold text-xs text-gray-500 dark:text-gray-400 mb-1">
                       {message.sender}
                     </div>
                   )}
                   <p>{message.text}</p>
-                  <div className="text-xs text-right mt-1 opacity-70">
+                  <div className="text-xs text-right mt-1 text-gray-500 dark:text-gray-400">
                     {formatTime(message.timestamp)}
                   </div>
                 </div>
@@ -198,18 +198,18 @@ export default function ChatRoom() {
           </div>
           
           {/* Message input */}
-          <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
+          <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800 shadow-lg">
             <form onSubmit={handleSendMessage} className="flex space-x-2">
               <input
                 type="text"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Type a message..."
-                className="flex-1 border border-gray-300 dark:border-gray-600 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                className="flex-1 border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white text-base"
               />
               <button
                 type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full font-semibold transition-colors shadow-md hover:shadow-lg"
               >
                 Send
               </button>
