@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useRooms } from "@/context/RoomsContext"; // Import useRooms hook
 
 interface Message {
   id: string;
@@ -23,6 +24,7 @@ export default function ChatRoom() {
   const [inviteLink, setInviteLink] = useState("");
   const [copySuccess, setCopySuccess] = useState(false);
   const [participants, setParticipants] = useState<string[]>([userName]);
+  const { joinedRooms, addRoom } = useRooms(); // Use the global joinedRooms state and addRoom function
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
@@ -37,6 +39,9 @@ export default function ChatRoom() {
   };
   
   useEffect(() => {
+    // Add current room to joinedRooms using the global addRoom function
+    addRoom(roomId);
+
     // Generate invite link
     const baseUrl = window.location.origin;
     setInviteLink(`${baseUrl}/room/${roomId}`);
@@ -85,7 +90,7 @@ export default function ChatRoom() {
     }, 5000);
     
     return () => clearInterval(interval);
-  }, [roomId, participants]);
+  }, [roomId, participants, addRoom]); // Add addRoom to dependencies
   
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -125,40 +130,60 @@ export default function ChatRoom() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex flex-col">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
+      <header className="bg-white dark:bg-gray-800 shadow-lg py-4 px-6 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center">
-          <Link href="/" className="text-blue-600 dark:text-blue-400 mr-4 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
+          <Link href="/" className="text-blue-600 dark:text-blue-400 mr-4 hover:text-blue-800 dark:hover:text-blue-300 transition-colors text-lg font-medium">
             &larr; Back
           </Link>
-          <img src="/chathub-logo.svg" alt="ChatHub Logo" className="h-9 w-9 mr-3" />
-          <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">
+          <img src="/chathub-logo.svg" alt="ChatHub Logo" className="h-10 w-10 mr-3" />
+          <h1 className="text-xl md:text-2xl font-extrabold text-gray-800 dark:text-white">
             ChatHub Room: <span className="text-blue-600 dark:text-blue-400">{roomId}</span>
           </h1>
         </div>
         <button
           onClick={copyInviteLink}
-          className="bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
         >
           {copySuccess ? "Copied!" : "Copy Invite Link"}
         </button>
       </header>
       
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar - Participants */}
-        <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 hidden md:block shadow-inner">
-          <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-5">
+        {/* Sidebar - Participants and Joined Rooms */}
+        <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-6 hidden md:block shadow-inner overflow-y-auto custom-scrollbar">
+          <h2 className="text-xl font-extrabold text-gray-800 dark:text-white mb-6">
             Participants ({participants.length})
           </h2>
           <ul>
             {participants.map((participant, index) => (
               <li 
                 key={index} 
-                className="py-2 px-3 rounded-lg mb-1 flex items-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                className="py-3 px-4 rounded-xl mb-2 flex items-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
               >
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                {participant} {participant === userName && "(You)"}
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-3 shadow-sm"></div>
+                <span className="font-medium">{participant}</span> {participant === userName && <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">(You)</span>}
+              </li>
+            ))}
+          </ul>
+
+          <h2 className="text-xl font-extrabold text-gray-800 dark:text-white mt-8 mb-6">
+            Joined Rooms ({joinedRooms.length})
+          </h2>
+          <ul>
+            {joinedRooms.map((room) => (
+              <li 
+                key={room} 
+                className={`py-3 px-4 rounded-xl mb-2 flex items-center transition-colors cursor-pointer ${
+                  room === roomId 
+                    ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-semibold' 
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+                onClick={() => router.push(`/room/${room}?name=${userName}`)}
+              >
+                <div className={`w-3 h-3 rounded-full mr-3 shadow-sm ${room === roomId ? 'bg-blue-500' : 'bg-gray-400'}`}></div>
+                <span className="font-medium">{room}</span> {room === roomId && <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">(Current)</span>}
               </li>
             ))}
           </ul>
@@ -167,28 +192,28 @@ export default function ChatRoom() {
         {/* Main chat area */}
         <div className="flex-1 flex flex-col">
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+          <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar bg-gray-50 dark:bg-gray-900">
             {messages.map((message) => (
               <div 
                 key={message.id} 
                 className={`flex ${message.sender === userName ? 'justify-end' : 'justify-start'}`}
               >
                 <div 
-                  className={`max-w-[75%] rounded-xl px-4 py-2 shadow-sm ${
+                  className={`max-w-[80%] sm:max-w-[75%] lg:max-w-[60%] rounded-2xl px-4 py-2 shadow-md relative ${
                     message.sender === "System" 
-                      ? "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300" 
+                      ? "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-center italic text-sm sm:text-base" 
                       : message.sender === userName
-                        ? "bg-blue-600 text-white shadow-md" 
-                        : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 shadow-md"
+                        ? "bg-blue-600 text-white rounded-br-none" 
+                        : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 rounded-bl-none"
                   }`}
                 >
                   {message.sender !== userName && message.sender !== "System" && (
-                    <div className="font-semibold text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    <div className="font-bold text-xs sm:text-sm mb-1 -mt-1 text-blue-700 dark:text-blue-300">
                       {message.sender}
                     </div>
                   )}
-                  <p>{message.text}</p>
-                  <div className="text-xs text-right mt-1 text-gray-500 dark:text-gray-400">
+                  <p className="text-sm sm:text-base leading-relaxed">{message.text}</p>
+                  <div className={`text-right mt-1 text-[10px] sm:text-xs ${message.sender === userName ? 'text-blue-200' : 'text-gray-500 dark:text-gray-400'}`}>
                     {formatTime(message.timestamp)}
                   </div>
                 </div>
@@ -198,20 +223,23 @@ export default function ChatRoom() {
           </div>
           
           {/* Message input */}
-          <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800 shadow-lg">
-            <form onSubmit={handleSendMessage} className="flex space-x-2">
+          <div className="border-t border-gray-200 dark:border-gray-700 p-3 sm:p-4 bg-white dark:bg-gray-800 shadow-2xl">
+            <form onSubmit={handleSendMessage} className="flex space-x-2 sm:space-x-3">
               <input
                 type="text"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Type a message..."
-                className="flex-1 border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white text-base"
+                placeholder="Type your message here..."
+                className="flex-1 border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2 sm:px-5 sm:py-3 focus:ring-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white text-sm sm:text-base placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-300 ease-in-out"
               />
               <button
                 type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full font-semibold transition-colors shadow-md hover:shadow-lg"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-full font-extrabold transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center"
               >
                 Send
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 ml-1 sm:ml-2 -mr-1 transform rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
               </button>
             </form>
           </div>
