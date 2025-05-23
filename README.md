@@ -1,8 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ChatHub
+
+A simple, fast, and secure text communication platform similar to Google Meet, but focused on chat functionality.
+
+## Features
+
+- Create chat rooms with unique IDs
+- Join existing rooms using room IDs
+- Real-time text messaging
+- See active participants in the room
+- Copy invite links to share with others
+- Clean, responsive UI with dark mode support
+
+## Technology Stack
+
+- Next.js 14 with App Router
+- TypeScript
+- Tailwind CSS
+- React Hooks for state management
 
 ## Getting Started
 
-First, run the development server:
+First, install the dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
@@ -10,27 +38,28 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How It Works
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Users can create a new chat room by entering their name and clicking "Create Room"
+2. A unique room ID is generated, and the user is redirected to the chat room
+3. Other users can join the room by entering the room ID and their name
+4. Messages are displayed in real-time, with system notifications when users join
+5. The room creator can share the invite link with others
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+- `src/app/page.tsx`: The landing page with options to create or join a room
+- `src/app/room/[id]/page.tsx`: The chat room page with messaging functionality
+- `public/chathub-logo.svg`: The ChatHub logo
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Future Enhancements
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Persistent storage for messages
+- User authentication
+- File sharing capabilities
+- End-to-end encryption
+- Custom room settings
