@@ -24,7 +24,7 @@ export default function ChatRoom() {
   const [inviteLink, setInviteLink] = useState("");
   const [copySuccess, setCopySuccess] = useState(false);
   const [participants, setParticipants] = useState<string[]>([userName]);
-  const { joinedRooms, addRoom } = useRooms(); // Use the global joinedRooms state and addRoom function
+  const { joinedRooms, addRoom, removeRoom } = useRooms(); // Use the global joinedRooms state, addRoom, and removeRoom functions
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
@@ -120,6 +120,12 @@ export default function ChatRoom() {
     setCopySuccess(true);
     setTimeout(() => setCopySuccess(false), 2000);
   };
+
+  // Handle leaving the room
+  const handleLeaveRoom = () => {
+    removeRoom(roomId);
+    router.push("/"); // Redirect to home page
+  };
   
   // Format timestamp
   const formatTime = (timestamp: number) => {
@@ -142,12 +148,20 @@ export default function ChatRoom() {
             ChatHub Room: <span className="text-blue-600 dark:text-blue-400">{roomId}</span>
           </h1>
         </div>
-        <button
-          onClick={copyInviteLink}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-        >
-          {copySuccess ? "Copied!" : "Copy Invite Link"}
-        </button>
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={copyInviteLink}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+          >
+            {copySuccess ? "Copied!" : "Copy Invite Link"}
+          </button>
+          <button
+            onClick={handleLeaveRoom}
+            className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+          >
+            Leave Room
+          </button>
+        </div>
       </header>
       
       <div className="flex flex-1 overflow-hidden">

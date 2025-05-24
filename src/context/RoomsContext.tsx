@@ -6,6 +6,7 @@ import useLocalStorage from '@/hooks/useLocalStorage';
 interface RoomsContextType {
   joinedRooms: string[];
   addRoom: (roomId: string) => void;
+  removeRoom: (roomId: string) => void;
 }
 
 const RoomsContext = createContext<RoomsContextType | undefined>(undefined);
@@ -22,8 +23,12 @@ export function RoomsProvider({ children }: { children: React.ReactNode }) {
     });
   }, [setJoinedRooms]);
 
+  const removeRoom = useCallback((roomId: string) => {
+    setJoinedRooms(prevRooms => prevRooms.filter(id => id !== roomId));
+  }, [setJoinedRooms]);
+
   return (
-    <RoomsContext.Provider value={{ joinedRooms, addRoom }}>
+    <RoomsContext.Provider value={{ joinedRooms, addRoom, removeRoom }}>
       {children}
     </RoomsContext.Provider>
   );
