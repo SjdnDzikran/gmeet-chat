@@ -24,6 +24,7 @@ export default function ChatRoom() {
   const [inviteLink, setInviteLink] = useState("");
   const [copySuccess, setCopySuccess] = useState(false);
   const [participants, setParticipants] = useState<string[]>([userName]);
+  const [pinnedMessageId, setPinnedMessageId] = useState<string | null>(null); // New state for pinned message
   const { joinedRooms, addRoom, removeRoom } = useRooms(); // Use the global joinedRooms state, addRoom, and removeRoom functions
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -56,46 +57,23 @@ export default function ChatRoom() {
       },
     ]);
     
-    // Set up a mock connection (in a real app, this would be a WebSocket)
-    const interval = setInterval(() => {
-      // Simulate receiving a message (for demo purposes)
-      if (Math.random() > 0.95) {
-        const mockNames = ["Alice", "Bob", "Charlie", "Diana"];
-        const randomName = mockNames[Math.floor(Math.random() * mockNames.length)];
-        
-        if (!participants.includes(randomName)) {
-          setParticipants(prev => [...prev, randomName]);
-          
-          setMessages(prev => [
-            ...prev,
-            {
-              id: generateId(),
-              sender: "System",
-              text: `${randomName} has joined the room.`,
-              timestamp: Date.now(),
-            },
-          ]);
-        } else {
-          setMessages(prev => [
-            ...prev,
-            {
-              id: generateId(),
-              sender: randomName,
-              text: `This is a simulated message from ${randomName}.`,
-              timestamp: Date.now(),
-            },
-          ]);
-        }
-      }
-    }, 5000);
-    
-    return () => clearInterval(interval);
-  }, [roomId, participants, addRoom]); // Add addRoom to dependencies
+    return () => {}; // No cleanup needed for mock connection
+  }, [roomId, addRoom]); // Add addRoom to dependencies
   
   // Scroll to bottom whenever messages change
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+  
+  // Handle pinning a message
+  const handlePinMessage = (messageId: string) => {
+    setPinnedMessageId(messageId);
+  };
+
+  // Handle unpinning a message
+  const handleUnpinMessage = () => {
+    setPinnedMessageId(null);
+  };
   
   // Handle sending a new message
   const handleSendMessage = (e: React.FormEvent) => {
@@ -123,8 +101,34 @@ export default function ChatRoom() {
 
   // Handle leaving the room
   const handleLeaveRoom = () => {
+    // Simulate leaving message
+    setMessages(prev => [
+      ...prev,
+      {
+        id: generateId(),
+        sender: "System",
+        text: `${userName} has left the room.`,
+        timestamp: Date.now(),
+      },
+    ]);
+    setParticipants(prev => prev.filter(p => p !== userName)); // Remove user from participants
+
     removeRoom(roomId);
-    router.push("/"); // Redirect to home page
+    
+    // Optimize "Leave Room" Flow
+    if (joinedRooms.length > 1) {
+      // If user is in >1 room, redirect to another room they are still part of
+      const remainingRooms = joinedRooms.filter(id => id !== roomId);
+      if (remainingRooms.length > 0) {
+        router.push(`/room/${remainingRooms[0]}?name=${encodeURIComponent(userName)}`);
+      } else {
+        // Fallback to home if somehow no other rooms are found (shouldn't happen with joinedRooms.length > 1 check)
+        router.push("/");
+      }
+    } else {
+      // If user is in only 1 room, redirect them back to the index page
+      router.push("/");
+    }
   };
   
   // Format timestamp
@@ -205,6 +209,30 @@ export default function ChatRoom() {
         
         {/* Main chat area */}
         <div className="flex-1 flex flex-col">
+          {/* Pinned Message */}
+          {pinnedMessageId && (
+            <div className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 p-3 sm:p-4 border-b border-yellow-200 dark:border-yellow-700 flex items-center justify-between shadow-inner">
+              <div className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M12.316 3.856l-4.244 4.244a1 1 0 000 1.414L11.05 12.55a1 1 0 001.414 0l4.244-4.244a1 1 0 000-1.414L13.73 3.856a1 1 0 00-1.414 0z" clipRule="evenodd" />
+                  <path fillRule="evenodd" d="M3 10a1 1 0 011-1h.01a1 1 0 011 1v.01a1 1 0 01-1 1H4a1 1 0 01-1-1V10zm2 0a1 1 0 011-1h.01a1 1 0 011 1v.01a1 1 0 01-1 1H6a1 1 0 01-1-1V10zm2 0a1 1 0 011-1h.01a1 1 0 011 1v.01a1 1 0 01-1 1H8a1 1 0 01-1-1V10zm2 0a1 1 0 011-1h.01a1 1 0 011 1v.01a1 1 0 01-1 1h-1a1 1 0 01-1-1V10zm2 0a1 1 0 011-1h.01a1 1 0 011 1v.01a1 1 0 01-1 1h-1a1 1 0 01-1-1V10zm2 0a1 1 0 011-1h.01a1 1 0 011 1v.01a1 1 0 01-1 1h-1a1 1 0 01-1-1V10z" clipRule="evenodd" />
+                </svg>
+                <span className="font-semibold mr-2">Pinned:</span>
+                <span className="text-sm italic">
+                  {messages.find(msg => msg.id === pinnedMessageId)?.text}
+                </span>
+              </div>
+              <button 
+                onClick={handleUnpinMessage}
+                className="text-yellow-800 dark:text-yellow-200 hover:text-yellow-900 dark:hover:text-yellow-100 transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          )}
+
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar bg-gray-50 dark:bg-gray-900">
             {messages.map((message) => (
@@ -230,6 +258,17 @@ export default function ChatRoom() {
                   <div className={`text-right mt-1 text-[10px] sm:text-xs ${message.sender === userName ? 'text-blue-200' : 'text-gray-500 dark:text-gray-400'}`}>
                     {formatTime(message.timestamp)}
                   </div>
+                  {message.sender !== "System" && (
+                    <button 
+                      onClick={() => handlePinMessage(message.id)}
+                      className="absolute top-1 right-1 p-1 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                      title="Pin message"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transform rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
