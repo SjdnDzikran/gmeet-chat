@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import RoomsSection from "../components/RoomsSection";
 import ProfileSection from "../components/ProfileSection";
+import FeaturesSection from "../components/FeaturesSection";
 
 export default function Home() {
   const router = useRouter();
@@ -84,6 +85,9 @@ export default function Home() {
             />
           </div>
         </div>
+
+        {/* Features section */}
+        <FeaturesSection />
       </div>
     </div>
   );
