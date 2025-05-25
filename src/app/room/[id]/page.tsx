@@ -20,13 +20,23 @@ export default function ChatRoom() {
   const params = useParams();
   const searchParams = useSearchParams();
   const roomId = params.id as string;
-  const userName = searchParams.get("name") || "Anonymous";
+  const userNameParam = searchParams.get("name");
   
+  // Redirect to home if username is not provided
+  useEffect(() => {
+    if (!userNameParam) {
+      router.push("/");
+    }
+  }, [userNameParam, router]);
+
+  // Ensure userName is a string after the redirect check
+  const userName = userNameParam as string;
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [inviteLink, setInviteLink] = useState("");
   const [copySuccess, setCopySuccess] = useState(false);
-  const [participants, setParticipants] = useState<string[]>([userName]);
+  const [participants, setParticipants] = useState<string[]>([userName]); // userName is now guaranteed to be string
   const [pinnedMessageId, setPinnedMessageId] = useState<string | null>(null);
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
