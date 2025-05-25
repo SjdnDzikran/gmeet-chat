@@ -21,25 +21,30 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       <p className="text-gray-600 dark:text-gray-300 mb-6 text-sm">
         Set your username for chat rooms.
       </p>
-      <div className="mb-4">
-        <label
-          htmlFor="profile-name"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-        >
-          Username
-        </label>
-        <input
-          type="text"
-          id="profile-name"
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white text-base"
-          placeholder="Enter your username"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
-      {usernameError && (
-        <p className="text-red-500 text-sm mb-4">{usernameError}</p>
-      )}
+            <div className="mb-4">
+              <label
+                htmlFor="profile-name"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                Username
+              </label>
+              <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-full focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 dark:bg-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <input
+                  type="text"
+                  id="profile-name"
+                  className="flex-grow px-2 py-3 bg-transparent outline-none text-white text-base placeholder-gray-400 dark:placeholder-gray-500"
+                  placeholder="Enter your username"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+            </div>
+            {usernameError && (
+              <p className="text-red-500 text-sm mt-4">{usernameError}</p>
+            )}
     </div>
   );
 };

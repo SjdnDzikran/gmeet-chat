@@ -22,9 +22,8 @@ const RoomsSection: React.FC<RoomsSectionProps> = ({
       <div className="flex flex-col md:flex-row items-center gap-2">
         <button
           onClick={createRoom}
-          className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 ease-in-out transform hover:-translate-y-1 shadow-md hover:shadow-lg whitespace-nowrap min-w-[180px]"
+          className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 ease-in-out transform hover:-translate-y-1 shadow-md hover:shadow-lg whitespace-nowrap"
         >
-          <img src="/file.svg" alt="New meeting icon" className="h-5 w-5 mr-2" />
           New meeting
         </button>
         <form onSubmit={joinRoom} className="flex items-center border border-gray-300 dark:border-gray-600 rounded-full focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 dark:bg-gray-700">
