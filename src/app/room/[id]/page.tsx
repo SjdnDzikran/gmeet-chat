@@ -104,9 +104,15 @@ export default function ChatRoom() {
   }, [messages]);
   
   // Handlers for MessageContextMenu
+  const handleCloseContextMenu = useCallback(() => {
+    setShowContextMenu(false);
+    setSelectedMessage(null);
+  }, []);
+
   const handlePinMessage = useCallback((messageId: string) => {
     setPinnedMessageId(messageId);
-  }, []);
+    handleCloseContextMenu(); // Close context menu after action
+  }, [handleCloseContextMenu]);
 
   const handleUnpinMessage = useCallback(() => { // Wrapped in useCallback
     setPinnedMessageId(null);
@@ -115,17 +121,14 @@ export default function ChatRoom() {
   const handleCopyMessage = useCallback((text: string) => {
     navigator.clipboard.writeText(text);
     // Optionally, show a "Copied!" feedback
-  }, []);
+    handleCloseContextMenu(); // Close context menu after action
+  }, [handleCloseContextMenu]);
 
   const handleReplyToMessage = useCallback((message: Message) => {
     setReplyingToMessage(message);
     // Optionally, focus the input field
-  }, []);
-
-  const handleCloseContextMenu = useCallback(() => {
-    setShowContextMenu(false);
-    setSelectedMessage(null);
-  }, []);
+    handleCloseContextMenu(); // Close context menu after action
+  }, [handleCloseContextMenu]);
 
   // Handle opening the context menu
   const handleOpenContextMenu = (event: React.MouseEvent, message: Message) => {
