@@ -1,0 +1,48 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    extend: {
+      colors: {
+        'm3-primary': '#6750A4',
+        'm3-on-primary': '#FFFFFF',
+        'm3-primary-container': '#EADDFF',
+        'm3-on-primary-container': '#21005D',
+        'm3-secondary': '#625B71',
+        'm3-on-secondary': '#FFFFFF',
+        'm3-secondary-container': '#E8DEF8',
+        'm3-on-secondary-container': '#1D192B',
+        'm3-tertiary': '#7D5260',
+        'm3-on-tertiary': '#FFFFFF',
+        'm3-tertiary-container': '#FFD8E4',
+        'm3-on-tertiary-container': '#31111D',
+        'm3-error': '#B3261E',
+        'm3-on-error': '#FFFFFF',
+        'm3-error-container': '#F9DEDC',
+        'm3-on-error-container': '#410E0B',
+        'm3-background': '#FFFBFE',
+        'm3-on-background': '#1C1B1F',
+        'm3-surface': '#FFFBFE',
+        'm3-on-surface': '#1C1B1F',
+        'm3-surface-variant': '#E7E0EC',
+        'm3-on-surface-variant': '#49454F',
+        'm3-outline': '#79747E',
+        'm3-inverse-on-surface': '#F4EFF4',
+        'm3-inverse-surface': '#313033',
+        'm3-inverse-primary': '#D0BCFF',
+        'm3-shadow': '#000000',
+        'm3-surface-tint': '#6750A4',
+        'm3-outline-variant': '#CAC4D0',
+        'm3-scrim': '#000000',
+      },
+      fontFamily: {
+        roboto: ['Roboto', 'sans-serif'],
+        'roboto-mono': ['Roboto Mono', 'monospace'],
+      },
+    },
+  },
+  plugins: [],
+};
