@@ -23,9 +23,6 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   return (
     <header className="bg-white dark:bg-gray-800 shadow-lg py-4 px-6 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
       <div className="flex items-center">
-        <Link href="/" className="text-blue-600 dark:text-blue-400 mr-4 hover:text-blue-800 dark:hover:text-blue-300 transition-colors text-lg font-medium">
-          &larr; Back
-        </Link>
         <img src="/chathub-logo.svg" alt="ChatHub Logo" className="h-10 w-10 mr-3" />
         <h1 className="text-xl md:text-2xl font-extrabold text-gray-800 dark:text-white">
           ChatHub Room: <span className="text-blue-600 dark:text-blue-400">{roomId}</span>

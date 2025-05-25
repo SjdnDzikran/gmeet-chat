@@ -31,7 +31,7 @@ export default function ChatRoom() {
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [replyingToMessage, setReplyingToMessage] = useState<Message | null>(null);
-  const { joinedRooms, addRoom, removeRoom } = useRooms();
+  const { addRoom } = useRooms();
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
@@ -151,18 +151,7 @@ export default function ChatRoom() {
     ]);
     setParticipants(prev => prev.filter(p => p !== userName));
 
-    removeRoom(roomId);
-    
-    if (joinedRooms.length > 1) {
-      const remainingRooms = joinedRooms.filter(id => id !== roomId);
-      if (remainingRooms.length > 0) {
-        router.push(`/room/${remainingRooms[0]}?name=${encodeURIComponent(userName)}`);
-      } else {
-        router.push("/");
-      }
-    } else {
-      router.push("/");
-    }
+    router.push("/");
   };
   
   // Format timestamp
@@ -188,8 +177,6 @@ export default function ChatRoom() {
         <ChatSidebar
           participants={participants}
           userName={userName}
-          joinedRooms={joinedRooms}
-          roomId={roomId}
         />
         
         <div className="flex-1 flex flex-col"> {/* This div should contain MessageList and MessageInput */}
