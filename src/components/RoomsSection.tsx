@@ -33,6 +33,7 @@ const RoomsSection: React.FC<RoomsSectionProps> = ({
             id="room-id"
             className="flex-grow px-2 py-3 bg-transparent outline-none text-white text-base placeholder-gray-400 dark:placeholder-gray-500"
             placeholder="Enter a code or link"
+            autoComplete="off"
             value={roomId}
             onChange={(e) => setRoomId(e.target.value)}
           />
