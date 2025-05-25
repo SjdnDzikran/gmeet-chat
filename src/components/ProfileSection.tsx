@@ -35,7 +35,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 <input
                   type="text"
                   id="profile-name"
-                  className="flex-grow px-2 py-3 bg-transparent outline-none text-white text-base placeholder-gray-400 dark:placeholder-gray-500"
+                  className="flex-grow px-2 py-3 bg-transparent outline-none text-gray-800 dark:text-white text-base placeholder-gray-400 dark:placeholder-gray-500 autofill:!bg-white dark:autofill:!bg-gray-700 autofill:!text-gray-800 dark:autofill:!text-white"
                   placeholder="Enter your username"
                   value={name}
                   onChange={(e) => setName(e.target.value)}

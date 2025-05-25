@@ -66,19 +66,23 @@ export default function Home() {
         </header>
 
         {/* Main content */}
-        <div className="w-full grid md:grid-cols-2 gap-6 mt-8">
-          <RoomsSection
-            roomId={roomId}
-            setRoomId={setRoomId}
-            createRoom={createRoom}
-            joinRoom={joinRoom}
-            roomError={roomError}
-          />
-          <ProfileSection
-            name={name}
-            setName={setName}
-            usernameError={usernameError}
-          />
+        <div className="w-full grid md:grid-cols-3 gap-6 mt-8 items-center">
+          <div className="md:col-span-2">
+            <RoomsSection
+              roomId={roomId}
+              setRoomId={setRoomId}
+              createRoom={createRoom}
+              joinRoom={joinRoom}
+              roomError={roomError}
+            />
+          </div>
+          <div className="md:col-span-1">
+            <ProfileSection
+              name={name}
+              setName={setName}
+              usernameError={usernameError}
+            />
+          </div>
         </div>
       </div>
     </div>
