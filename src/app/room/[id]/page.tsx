@@ -13,6 +13,7 @@ interface Message {
   sender: string;
   text: string;
   timestamp: number;
+  repliedTo?: Message; // Add repliedTo property
 }
 
 export default function ChatRoom() {
@@ -41,6 +42,7 @@ export default function ChatRoom() {
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [replyingToMessage, setReplyingToMessage] = useState<Message | null>(null);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false); // New state for mobile sidebar
   const { addRoom } = useRooms();
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -103,9 +105,15 @@ export default function ChatRoom() {
   }, [messages]);
   
   // Handlers for MessageContextMenu
+  const handleCloseContextMenu = useCallback(() => {
+    setShowContextMenu(false);
+    setSelectedMessage(null);
+  }, []);
+
   const handlePinMessage = useCallback((messageId: string) => {
     setPinnedMessageId(messageId);
-  }, []);
+    handleCloseContextMenu(); // Close context menu after action
+  }, [handleCloseContextMenu]);
 
   const handleUnpinMessage = useCallback(() => { // Wrapped in useCallback
     setPinnedMessageId(null);
@@ -114,17 +122,14 @@ export default function ChatRoom() {
   const handleCopyMessage = useCallback((text: string) => {
     navigator.clipboard.writeText(text);
     // Optionally, show a "Copied!" feedback
-  }, []);
+    handleCloseContextMenu(); // Close context menu after action
+  }, [handleCloseContextMenu]);
 
   const handleReplyToMessage = useCallback((message: Message) => {
     setReplyingToMessage(message);
     // Optionally, focus the input field
-  }, []);
-
-  const handleCloseContextMenu = useCallback(() => {
-    setShowContextMenu(false);
-    setSelectedMessage(null);
-  }, []);
+    handleCloseContextMenu(); // Close context menu after action
+  }, [handleCloseContextMenu]);
 
   // Handle opening the context menu
   const handleOpenContextMenu = (event: React.MouseEvent, message: Message) => {
@@ -158,6 +163,7 @@ export default function ChatRoom() {
       sender: userName,
       text: newMessage,
       timestamp: Date.now(),
+      ...(replyingToMessage && { repliedTo: replyingToMessage }), // Conditionally add repliedTo
     };
     
     setMessages(prev => [...prev, message]);
@@ -180,6 +186,10 @@ export default function ChatRoom() {
     });
   };
 
+  const toggleMobileSidebar = useCallback(() => {
+    setShowMobileSidebar(prev => !prev);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
       <ChatHeader
@@ -189,14 +199,31 @@ export default function ChatRoom() {
         copyInviteLink={copyInviteLink}
         handleLeaveRoom={handleLeaveRoom}
         userName={userName}
+        participants={participants}
+        toggleMobileSidebar={toggleMobileSidebar} // Pass toggle function
       />
       
       <div className="flex flex-1 overflow-hidden">
+        {/* Desktop Sidebar */}
         <ChatSidebar
           participants={participants}
           userName={userName}
+          isMobile={false} // Indicate desktop mode
+          isOpen={true} // Always open on desktop
+          onClose={() => {}} // No close needed for desktop
         />
         
+        {/* Mobile Sidebar (Slide-over) */}
+        {showMobileSidebar && (
+          <ChatSidebar
+            participants={participants}
+            userName={userName}
+            isMobile={true} // Indicate mobile mode
+            isOpen={showMobileSidebar}
+            onClose={toggleMobileSidebar}
+          />
+        )}
+
         <div className="flex-1 flex flex-col"> {/* This div should contain MessageList and MessageInput */}
           <MessageList
             messages={messages}
