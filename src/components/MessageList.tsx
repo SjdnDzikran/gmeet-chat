@@ -1,13 +1,15 @@
 "use client";
 
 import React, { RefObject } from "react";
-import MessageContextMenu from "./MessageContextMenu"; // Assuming this is already modularized
+import MessageContextMenu from "./MessageContextMenu";
+import ReplyPreview from "./ReplyPreview"; // Import ReplyPreview
 
 interface Message {
   id: string;
   sender: string;
   text: string;
   timestamp: number;
+  repliedTo?: Message; // Add repliedTo property
 }
 
 interface MessageListProps {
@@ -86,6 +88,11 @@ const MessageList: React.FC<MessageListProps> = ({
               }`}
               onClick={(e) => message.sender !== "System" && handleOpenContextMenu(e, message)} // Click to open context menu
             >
+              {message.repliedTo && ( // Conditionally render ReplyPreview
+                <div className="mb-2">
+                  <ReplyPreview message={message.repliedTo} onClose={() => {}} /> {/* onClose is not needed here as it's just for display */}
+                </div>
+              )}
               {message.sender !== userName && message.sender !== "System" && (
                 <div className="font-bold text-xs sm:text-sm mb-1 -mt-1 text-blue-700 dark:text-blue-300">
                   {message.sender}

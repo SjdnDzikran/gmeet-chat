@@ -13,6 +13,7 @@ interface Message {
   sender: string;
   text: string;
   timestamp: number;
+  repliedTo?: Message; // Add repliedTo property
 }
 
 export default function ChatRoom() {
@@ -158,6 +159,7 @@ export default function ChatRoom() {
       sender: userName,
       text: newMessage,
       timestamp: Date.now(),
+      ...(replyingToMessage && { repliedTo: replyingToMessage }), // Conditionally add repliedTo
     };
     
     setMessages(prev => [...prev, message]);
