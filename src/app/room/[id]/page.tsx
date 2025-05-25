@@ -45,6 +45,22 @@ export default function ChatRoom() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  // Handle leaving the room
+  const handleLeaveRoom = useCallback(() => {
+    setMessages(prev => [
+      ...prev,
+      {
+        id: generateId(),
+        sender: "System",
+        text: `${userName} has left the room.`,
+        timestamp: Date.now(),
+      },
+    ]);
+    setParticipants(prev => prev.filter(p => p !== userName));
+
+    router.push("/");
+  }, [generateId, router, userName]); // Add dependencies for useCallback
   
   useEffect(() => {
     addRoom(roomId);
@@ -60,9 +76,17 @@ export default function ChatRoom() {
         timestamp: Date.now(),
       },
     ]);
+
+    const handleBeforeUnload = () => {
+      router.push("/"); // Directly redirect without state updates in this component
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
     
-    return () => {};
-  }, [roomId, addRoom]);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [roomId, addRoom, router]); // Removed handleLeaveRoom from dependencies
   
   useEffect(() => {
     scrollToBottom();
@@ -136,22 +160,6 @@ export default function ChatRoom() {
     navigator.clipboard.writeText(`${inviteLink}?name=YourName`);
     setCopySuccess(true);
     setTimeout(() => setCopySuccess(false), 2000);
-  };
-
-  // Handle leaving the room
-  const handleLeaveRoom = () => {
-    setMessages(prev => [
-      ...prev,
-      {
-        id: generateId(),
-        sender: "System",
-        text: `${userName} has left the room.`,
-        timestamp: Date.now(),
-      },
-    ]);
-    setParticipants(prev => prev.filter(p => p !== userName));
-
-    router.push("/");
   };
   
   // Format timestamp
