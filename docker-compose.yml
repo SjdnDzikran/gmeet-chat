@@ -47,6 +47,34 @@ services:
                                            # Ensure your Dockerfile handles production builds correctly.
       # If your "dev" script in package.json (used by nodemon) compiles TS on the fly (like ts-node-dev),
       # you might adjust volumes. The current Dockerfile builds TS first.
+  
+  redis:
+    image: redis:7-alpine # Using a recent Alpine version of Redis
+    ports:
+      - "6379:6379" # Expose Redis port to host (optional, for direct access/debugging)
+    volumes:
+      - redis_data:/data # Persist Redis data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  room-service:
+    build:
+      context: ./room-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081" # Expose for direct testing; Nginx will be main entry for API
+    environment:
+      - PORT=8081
+      - REDIS_URL=redis://redis:6379 # Service name 'redis' will resolve to Redis container IP
+    depends_on:
+      redis: # Wait for Redis to be healthy or started
+        condition: service_healthy
+        # condition: service_started # if no healthcheck
+    # volumes: # Add for development if you want live reload for room-service
+    #   - ./room-service/src:/usr/src/app/src
 
   nginx:
     build:
@@ -57,6 +85,8 @@ services:
     depends_on:
       - frontend
       - chat-service
+      - room-service # Nginx now also depends on room-service
 
 volumes:
   rabbitmq_data:
+  redis_data:    # New volume for Redis persistence
