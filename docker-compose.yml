@@ -41,8 +41,8 @@ services:
       rabbitmq: # Wait for RabbitMQ to be healthy (if healthcheck is defined) or just started
         condition: service_healthy # Use this if rabbitmq has a healthcheck
         # condition: service_started # Use this if no healthcheck or for simpler startup order
-    volumes:
-      - ./chat-service/src:/usr/src/app/src # Mount src for development (if using nodemon in Docker)
+    # volumes:
+    #  - ./chat-service/src:/usr/src/app/src # Mount src for development (if using nodemon in Docker)
                                            # For production, you'd typically not mount src.
                                            # Ensure your Dockerfile handles production builds correctly.
       # If your "dev" script in package.json (used by nodemon) compiles TS on the fly (like ts-node-dev),
@@ -56,6 +56,7 @@ services:
       - "80:80"
     depends_on:
       - frontend
+      - chat-service
 
 volumes:
   rabbitmq_data:
