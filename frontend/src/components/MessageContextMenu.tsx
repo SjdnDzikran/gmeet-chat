@@ -1,11 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-
-interface Message {
-  id: string;
-  sender: string;
-  text: string;
-  timestamp: number;
-}
+import { Message } from "@/types/chat";
 
 interface MessageContextMenuProps {
   message: Message;
@@ -46,7 +40,7 @@ export default function MessageContextMenu({
       className="fixed bg-white dark:bg-gray-700 rounded-lg shadow-lg py-2 z-50 border border-gray-200 dark:border-gray-600"
     >
       <button 
-        onClick={() => onPin(message.id)}
+        onClick={() => message.id && onPin(message.id)}
         className="w-full text-left px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 flex items-center"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
