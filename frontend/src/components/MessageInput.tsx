@@ -2,13 +2,7 @@
 
 import React from "react";
 import ReplyPreview from "./ReplyPreview"; // Assuming this is already modularized
-
-interface Message {
-  id: string;
-  sender: string;
-  text: string;
-  timestamp: number;
-}
+import { Message } from "@/types/chat";
 
 interface MessageInputProps {
   newMessage: string;

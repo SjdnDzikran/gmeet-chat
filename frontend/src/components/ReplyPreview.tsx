@@ -1,11 +1,5 @@
 import React from 'react';
-
-interface Message {
-  id: string;
-  sender: string;
-  text: string;
-  timestamp: number;
-}
+import { Message } from "@/types/chat";
 
 interface ReplyPreviewProps {
   message: Message;

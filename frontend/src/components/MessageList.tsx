@@ -3,14 +3,7 @@
 import React, { RefObject } from "react";
 import MessageContextMenu from "./MessageContextMenu";
 import ReplyPreview from "./ReplyPreview"; // Import ReplyPreview
-
-interface Message {
-  id: string;
-  sender: string;
-  text: string;
-  timestamp: number;
-  repliedTo?: Message; // Add repliedTo property
-}
+import { Message } from "@/types/chat";
 
 interface MessageListProps {
   messages: Message[];
