@@ -6,12 +6,14 @@ interface ProfileSectionProps {
   name: string;
   setName: (name: string) => void;
   usernameError: string;
+  isLoading?: boolean; // Add isLoading prop
 }
 
 const ProfileSection: React.FC<ProfileSectionProps> = ({
   name,
   setName,
   usernameError,
+  isLoading, // Use isLoading
 }) => {
   return (
     <div className="group backdrop-blur-xl bg-white/40 dark:bg-slate-800/40 rounded-3xl shadow-2xl border border-white/30 dark:border-slate-700/30 p-8 transform transition-all duration-700 hover:scale-[1.02] hover:shadow-3xl relative overflow-hidden h-full">
@@ -26,7 +28,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent mb-3">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:to-pink-400 bg-clip-text text-transparent mb-3">
             Your Identity
           </h2>
           <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
@@ -57,6 +59,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                     value={name}
                     autoComplete="off"
                     onChange={(e) => setName(e.target.value)}
+                    disabled={isLoading} // Disable input when loading
                   />
                 </div>
               </div>

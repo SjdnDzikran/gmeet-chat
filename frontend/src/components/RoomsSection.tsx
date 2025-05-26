@@ -8,6 +8,7 @@ interface RoomsSectionProps {
   createRoom: () => void;
   joinRoom: (e: React.FormEvent) => void;
   roomError: string;
+  isLoading?: boolean; // Add isLoading prop
 }
 
 const RoomsSection: React.FC<RoomsSectionProps> = ({
@@ -16,6 +17,7 @@ const RoomsSection: React.FC<RoomsSectionProps> = ({
   createRoom,
   joinRoom,
   roomError,
+  isLoading, // Use isLoading
 }) => {
   return (
     <div className="group backdrop-blur-xl bg-white/40 dark:bg-slate-800/40 rounded-3xl shadow-2xl border border-white/30 dark:border-slate-700/30 p-8 transform transition-all duration-700 hover:scale-[1.02] hover:shadow-3xl relative overflow-hidden">
@@ -43,13 +45,14 @@ const RoomsSection: React.FC<RoomsSectionProps> = ({
           <div className="text-center">
             <button
               onClick={createRoom}
-              className="group relative inline-flex items-center justify-center bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:via-purple-700 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-105 shadow-xl hover:shadow-2xl min-w-[200px]"
+              disabled={isLoading} // Disable button when loading
+              className="group relative inline-flex items-center justify-center bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:via-purple-700 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-105 shadow-xl hover:shadow-2xl min-w-[200px] disabled:opacity-70 disabled:cursor-not-allowed"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-violet-400 via-purple-400 to-indigo-400 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
               </svg>
-              <span className="relative z-10 text-lg">New Meeting</span>
+              <span className="relative z-10 text-lg">{isLoading ? 'Creating...' : 'New Meeting'}</span>
             </button>
           </div>
 
@@ -76,12 +79,14 @@ const RoomsSection: React.FC<RoomsSectionProps> = ({
                     autoComplete="off"
                     value={roomId}
                     onChange={(e) => setRoomId(e.target.value)}
+                    disabled={isLoading} // Disable input when loading
                   />
                   <button
                     type="submit"
+                    disabled={isLoading} // Disable button when loading
                     className="ml-4 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white font-semibold py-2.5 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
                   >
-                    Join
+                    {isLoading ? 'Joining...' : 'Join'}
                   </button>
                 </div>
               </div>
