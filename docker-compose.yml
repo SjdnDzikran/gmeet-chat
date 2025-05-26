@@ -15,6 +15,39 @@ services:
       - /app/node_modules # Avoids overriding node_modules in container
       - /app/.next
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine # Using the image with management plugin
+    ports:
+      - "5672:5672"   # AMQP protocol port
+      - "15672:15672" # Management UI port (access via http://localhost:15672)
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq # Persist RabbitMQ data (optional for dev)
+    healthcheck: # Optional: wait for RabbitMQ to be ready
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  chat-service:
+    build:
+      context: ./chat-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Expose chat-service port (useful for direct testing, Nginx will be main entry)
+    environment:
+      - PORT=8080
+      - RABBITMQ_URL=amqp://rabbitmq # Service name 'rabbitmq' will resolve to the RabbitMQ container IP
+    depends_on:
+      rabbitmq: # Wait for RabbitMQ to be healthy (if healthcheck is defined) or just started
+        condition: service_healthy # Use this if rabbitmq has a healthcheck
+        # condition: service_started # Use this if no healthcheck or for simpler startup order
+    volumes:
+      - ./chat-service/src:/usr/src/app/src # Mount src for development (if using nodemon in Docker)
+                                           # For production, you'd typically not mount src.
+                                           # Ensure your Dockerfile handles production builds correctly.
+      # If your "dev" script in package.json (used by nodemon) compiles TS on the fly (like ts-node-dev),
+      # you might adjust volumes. The current Dockerfile builds TS first.
+
   nginx:
     build:
       context: ./nginx
