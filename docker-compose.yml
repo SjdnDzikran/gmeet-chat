@@ -1,27 +1,27 @@
-# docker-compose.yml
-version: '3.8' # Or a newer version
+version: '3.8'
 
 services:
   frontend:
     build:
-      context: ./frontend # Path to your frontend code and Dockerfile
+      context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000" # Exposes Next.js app on host port 3000
+      - "3000:3000"
     environment:
-      - NODE_ENV=development # Or production, depending on your needs
+      - NODE_ENV=development
     volumes:
-      # Mount your frontend code for live reloading in development
-      # For production, you might not need this or handle volumes differently
       - ./frontend:/app
-      - /app/node_modules # Avoids overriding node_modules in container
+      - /app/node_modules
       - /app/.next
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1  
 
   nginx:
     build:
       context: ./nginx
       dockerfile: Dockerfile
     ports:
-      - "80:80" # Exposes Nginx on host port 80
+      - "80:80"
     depends_on:
-      - frontend # Nginx should start after the frontend is ready (or at least defined)
+      - frontend
