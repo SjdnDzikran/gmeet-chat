@@ -39,3 +39,7 @@ frontend/.vercel
 # typescript
 frontend/*.tsbuildinfo
 frontend/next-env.d.ts
+
+# chat-service
+chat-service/node_modules
+chat-service/dist
