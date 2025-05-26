@@ -92,6 +92,7 @@ export default function ChatRoom() {
       try {
         const receivedMessage: Message = JSON.parse(event.data as string);
         console.log("Message received from WebSocket:", receivedMessage);
+        console.log("Timestamp type:", typeof receivedMessage.timestamp, "Value:", receivedMessage.timestamp);
         setMessages((prevMessages) => [...prevMessages, receivedMessage]);
 
         // Update participants list based on system messages
