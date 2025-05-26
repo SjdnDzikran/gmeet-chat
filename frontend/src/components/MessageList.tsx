@@ -93,7 +93,7 @@ const MessageList: React.FC<MessageListProps> = ({
               )}
               <p className="text-sm sm:text-base leading-relaxed">{message.text}</p>
               <div className={`text-right mt-1 text-[10px] sm:text-xs ${message.sender === userName ? 'text-blue-200' : 'text-gray-500 dark:text-gray-400'}`}>
-                {formatTime(message.timestamp)}
+                {message.timestamp && !isNaN(message.timestamp) ? formatTime(message.timestamp) : 'Invalid Date'}
               </div>
               {/* Arrow icon for context menu - appears on hover */}
               {message.sender !== "System" && (

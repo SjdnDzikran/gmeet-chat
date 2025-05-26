@@ -184,7 +184,7 @@ wss.on('connection', async (ws: WebSocket, req: http.IncomingMessage) => {
     await subscribeToRoomRabbitMQ(client.roomId);
 
     console.log(`Client ${client.userId} connected to room ${client.roomId}.`);
-    client.send(JSON.stringify({ type: 'info', sender: 'System', text: `Welcome ${client.userId}!` }));
+    client.send(JSON.stringify({ type: 'info', sender: 'System', text: `Welcome ${client.userId}!`, timestamp: Date.now() }));
 
     const joinMessage = {
         roomId: client.roomId, // Essential for RabbitMQ message to be routed correctly by consumer
